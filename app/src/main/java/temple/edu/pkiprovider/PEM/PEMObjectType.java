@@ -21,7 +21,7 @@ package temple.edu.pkiprovider.PEM;
  * A PEM file can contain one or multiple PEM objects, each with a beginning and
  * ending marker.
  */
-enum PEMObjectType {
+public enum PEMObjectType {
     /** PEM string starting an RSA (PKCS#1) private key. */
     PRIVATE_KEY_PKCS1("-----BEGIN RSA PRIVATE KEY-----"),
     /** PEM string starting an (PKCS#8) private key. */

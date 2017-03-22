@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,7 @@ import java.util.List;
  * </li>
  * </ul>
  */
-final class PEM {
+public final class PEM {
     
     /** Marker for beginning of PEM encoded cert/key. */
     private static final String BEGIN_MARKER = "-----BEGIN ";
@@ -72,13 +73,38 @@ final class PEM {
         List<PEMObject> objects = readPEMObjects(is);
         for (PEMObject object : objects) {
             switch (object.getPEMObjectType()) {
-                case PRIVATE_KEY_PKCS1:
-                    return RSA.privateKeyFromPKCS1(object.getDerBytes());
+                case PRIVATE_KEY_PKCS8:
+                    return RSA.privateKeyFromPKCS8(object.getDerBytes());
                 default:
                     break;
             }
         }
         throw new IllegalArgumentException("Found no private key");
+    }
+
+    /**
+     * Returns the first public key that is found from the input stream of a
+     * PEM file.
+     *
+     * @param is input stream of PEM data.
+     * @return PublicKey found in PEM.
+     * @throws InvalidKeySpecException if failed to convert the DER bytes into a
+     *             public key.
+     * @throws IllegalArgumentException if no public key is found.
+     * @throws IOException if PEM could not be read.
+     */
+    public static PublicKey readPublicKey(InputStream is)
+            throws InvalidKeySpecException, IOException {
+        List<PEMObject> objects = readPEMObjects(is);
+        for (PEMObject object : objects) {
+            switch (object.getPEMObjectType()) {
+                case PUBLIC_KEY_X509:
+                    return RSA.publicKeyFromX509(object.getDerBytes());
+                default:
+                    break;
+            }
+        }
+        throw new IllegalArgumentException("Found no public key");
     }
     
     /**

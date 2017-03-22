@@ -21,7 +21,7 @@ package temple.edu.pkiprovider.PEM;
  * A PEM file can contain one or multiple PEM objects, each with a beginning and
  * ending marker.
  */
-class PEMObject {
+public class PEMObject {
     /** Marker of the beginning of the PEM Object. i.e. -----BEGIN.... */
     private final String beginMarker;
     /** Bytes of PEM Object (in DER format). */
